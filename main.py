@@ -1,8 +1,9 @@
 import asyncio
-import logging
-import os
+import telegram
 
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import CommandStart, Command
-from aiogram.types import Message
-from dotenv import load_dotenv
+
+messages, id_employee = telegram.messages_in_telebot()
+
+
+if __name__ == "__main__":
+    asyncio.run(telegram.messages_in_telebot())
