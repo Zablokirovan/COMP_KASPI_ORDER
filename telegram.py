@@ -21,7 +21,10 @@ async def messages_in_telebot():
         if result_database[1]:
             if result_database[0] == 'WAIT_ORDER':
                 if len(text) >= 6 and str.isdigit(text):
-                    await message.answer("Валидный код ")
+                    await message.answer("Валидный код")
+                else:
+                    await message.answer("Введен не верный код")
+
 
 
         else:
