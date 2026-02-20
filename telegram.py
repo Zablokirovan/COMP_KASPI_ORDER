@@ -41,7 +41,7 @@ async def messages_in_telebot():
                                              f"<b>Телефон клиента</b>: {data['customer']['cellPhone']}\n"
                                              f"<b>Адрес доставки</b>: {data['deliveryAddress']['formattedAddress']}\n", parse_mode='HTML')
 
-                        await kaspi.sending_code(order_data['data'][0]['id'],text)
+                        await kaspi.sending_code(order_data['data'][0]['id'],text, session)
                     else:
                         await message.answer("Введен не верный код")
             else:

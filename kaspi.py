@@ -9,7 +9,7 @@ load_dotenv()
 #kaspi token
 TOKEN = os.getenv("KASPI_TOKEN")
 
-TIMEOUT = aiohttp.ClientTimeout(total=30, connect=7, sock_read=25)
+TIMEOUT = aiohttp.ClientTimeout(total=120, connect=10, sock_read=90)
 
 def make_session():
     connector = aiohttp.TCPConnector(
@@ -49,5 +49,36 @@ async def get_info_for_order(session: aiohttp.ClientSession, kaspi_order_num: st
         return None
 
 
-async def sending_code(order_id, text):
-    pass
+async def sending_code(order_id, text, session: aiohttp.ClientSession,security_code: str | None = None):
+    url = "https://kaspi.kz/shop/api/v2/orders"
+    headers = {"X-Send-Code": "true",
+        "Content-Type": "application/vnd.api+json",
+        "Accept": "application/vnd.api+json;charset=UTF-8",   # можно оставить, у тебя уже работало
+        "X-Auth-Token": str(TOKEN),
+        "X-Security-Code": "" if security_code is None else str(security_code),}
+    payload = {
+        "data": {
+            "type": "orders",
+            "id": order_id,
+            # ВАЖНО: это ordersID (id из ответа Kaspi), НЕ code
+            "attributes": {
+                "code": str(text),  # это номер заказа (code)
+                "status": "COMPLETED",
+            },
+        }
+    }
+    try:
+        async with session.post(url, headers=headers, json=payload) as resp:
+            if resp.status != 200:
+                err = await resp.text()
+                print("Kaspi HTTP", resp.status, err[:500])
+                return None
+            return await resp.json(content_type=None)
+
+    except asyncio.TimeoutError:
+        print("Kaspi timeout")
+        return None
+    except aiohttp.ClientError as e:
+        print("Kaspi client error:", repr(e))
+        return None
+
