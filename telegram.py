@@ -18,9 +18,15 @@ async def messages_in_telebot():
         text = message.text
 
         result_database = database.get_info_in_db(user_id)
-        print(result_database)
-        if result_database == 'true':
-            await message.answer(f"Вы ввели не коректные даныне")
+        if result_database[1]:
+            if result_database[0] == 'WAIT_ORDER':
+                if len(text) >= 6 and str.isdigit(text):
+                    await message.answer("Валидный код ")
+
+
+        else:
+            database.insert_first_data(user_id)
+            await message.answer("📝Введите номер заказа Kaspi")
 
 
 

@@ -34,3 +34,12 @@ def get_info_in_db(telegram_id):
 
         return cur.fetchone()
 
+
+def insert_first_data(user_id):
+    with db_client.cursor() as cur:
+        cur.execute("""
+        INSERT INTO "Kaspi".tg_driver_state(tg_id, state, order_id,
+         updated_at, kaspi_order_id)
+         VALUES(%s, 'WAIT_ORDER', null, null, null );
+        """,(user_id,))
+        db_client.commit()
