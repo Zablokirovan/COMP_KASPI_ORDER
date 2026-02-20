@@ -1,9 +1,27 @@
-import asyncio
-import telegram
+import os
 
+import aiohttp
+from dotenv import load_dotenv
 
-messages, id_employee = telegram.messages_in_telebot()
+load_dotenv()
 
+TOKEN = os.getenv('KASPI_TOKEN')
 
-if __name__ == "__main__":
-    asyncio.run(telegram.messages_in_telebot())
+async def get_info_for_order(kaspi_order_num):
+    headers = {
+        "X-Auth-Token": str(TOKEN)
+    }
+
+    url = f"https://kaspi.kz/shop/api/v2/orders?filter[orders][code]={int(kaspi_order_num)}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as response:
+            print("Status:", response.status)
+
+            if response.status == 200:
+                data = await response.json()
+                return data
+            else:
+                text = await response.text()
+                print("Ошибка:", text)
+                return None

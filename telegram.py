@@ -1,6 +1,7 @@
 import asyncio
 import os
 import database
+import kaspi
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
 from dotenv import load_dotenv
@@ -20,12 +21,12 @@ async def messages_in_telebot():
         result_database = database.get_info_in_db(user_id)
         if result_database[1]:
             if result_database[0] == 'WAIT_ORDER':
-                if len(text) >= 6 and str.isdigit(text):
+                if len(text) >= 6 and text.isdigit():
                     await message.answer("Валидный код")
+                    order_data = await kaspi.get_info_for_order(message.text)
+                    print(order_data)
                 else:
                     await message.answer("Введен не верный код")
-
-
 
         else:
             database.insert_first_data(user_id)
