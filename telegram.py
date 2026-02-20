@@ -27,11 +27,21 @@ async def messages_in_telebot():
             state, found = await database.get_info_in_db(user_id)
 
             if found:
+
                 if state == "WAIT_ORDER":
+
                     if len(text) >= 6 and text.isdigit():
-                        await message.answer("Валидный код. Ищу заказ…")
+
                         order_data = await kaspi.get_info_for_order(session, text)
-                        print(order_data['data'][0]['id'])
+
+                        data = order_data['data'][0]['attributes']
+
+                        await message.answer(f"<b>Информация о заказе</b>: {data['code']}\n"
+                                             f"<b>Имя клиента</b>: {data['customer']['name']+' '+data['customer']['lastName']}\n"
+                                             f"<b>Телефон клиента</b>: {data['customer']['cellPhone']}\n"
+                                             f"<b>Адрес доставки</b>: {data['deliveryAddress']['formattedAddress']}\n", parse_mode='HTML')
+
+                        await kaspi.sending_code(order_data['data'][0]['id'],text)
                     else:
                         await message.answer("Введен не верный код")
             else:

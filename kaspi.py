@@ -49,5 +49,5 @@ async def get_info_for_order(session: aiohttp.ClientSession, kaspi_order_num: st
         return None
 
 
-async def sending_code():
+async def sending_code(order_id, text):
     pass
