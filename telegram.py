@@ -31,7 +31,7 @@ async def messages_in_telebot():
                     if len(text) >= 6 and text.isdigit():
                         await message.answer("Валидный код. Ищу заказ…")
                         order_data = await kaspi.get_info_for_order(session, text)
-                        print(order_data)
+                        print(order_data['data'][0]['id'])
                     else:
                         await message.answer("Введен не верный код")
             else:

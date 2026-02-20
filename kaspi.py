@@ -47,3 +47,7 @@ async def get_info_for_order(session: aiohttp.ClientSession, kaspi_order_num: st
     except aiohttp.ClientError as e:
         print("Kaspi client error:", repr(e))
         return None
+
+
+async def sending_code():
+    pass
